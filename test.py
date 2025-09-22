@@ -18,11 +18,6 @@ import logging
 import time
 import random
 
-import sys, os
-sys.path.append(os.path.dirname(os.path.dirname(__file__)))
-
-from utils.db_utils import fetch_all_attendance
-
 # your project models / utils - adjust import path if needed
 from models import SCRFD, ArcFaceONNX
 from utils.helpers import draw_fancy_bbox
