@@ -1,0 +1,12 @@
+<h2>Danh sách nhân viên</h2>
+<a href="{% url 'employee_add' %}">+ Thêm nhân viên</a>
+<ul>
+  {% for e in employees %}
+    <li>
+      {{ e.name }} ({{ e.code }})
+      <a href="{% url 'employee_delete' e.id %}">Xóa</a>
+    </li>
+  {% empty %}
+    <li>Chưa có nhân viên nào.</li>
+  {% endfor %}
+</ul>

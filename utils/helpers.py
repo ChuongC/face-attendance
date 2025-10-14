@@ -149,3 +149,26 @@ def draw_fancy_bbox(frame, bbox, similarity, name, color):
     # Draw the filled rectangle
     cv2.rectangle(frame, (rect_x_start, rect_y_start), (rect_x_end, rect_y_end), color, cv2.FILLED)
 
+import cv2
+import numpy as np
+import sys, os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+def build_embedding(image_path: str, emp_name=None, emp_id=None):
+    from models import SCRFD, ArcFaceONNX
+    """Trích xuất embedding 512D từ ảnh khuôn mặt"""
+    _detector = SCRFD(model_file='weights/scrfd_500m.onnx')
+    _arcface = ArcFaceONNX(model_file='weights/w600k_r50.onnx')
+
+    img = cv2.imread(image_path)
+    bboxes, kpss = _detector.detect(img)
+    if len(kpss) == 0:
+        return None
+    emb = _arcface.get(img, kpss[0])
+
+    # ✅ tùy chọn: log embedding theo tên nhân viên
+    if emp_name:
+        print(f"[INFO] Embedded for {emp_name} (ID={emp_id}) generated.")
+
+    return emb
+

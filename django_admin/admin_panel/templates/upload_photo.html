@@ -1,0 +1,9 @@
+<h2>Upload ảnh cho {{ employee.name }}</h2>
+
+<form method="post" enctype="multipart/form-data">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Upload & Sync</button>
+</form>
+
+<a href="{% url 'dashboard' %}">← Quay lại Dashboard</a>

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard chấm công</title>
+    <style>
+        body { font-family: Arial; margin: 20px; }
+        h1 { color: #333; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 8px; border: 1px solid #ccc; text-align: left; }
+        img { width: 64px; height: 64px; border-radius: 50%; object-fit: cover; }
+    </style>
+</head>
+<body>
+    <h1>📊 Bảng điều khiển chấm công</h1>
+
+    <h2>Danh sách nhân viên</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th><th>Tên</th><th>Ảnh</th><th>Embedding</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for e in employees %}
+            <tr>
+                <td>{{ e.employee_id }}</td>
+                <td>{{ e.name }}</td>
+                <td>
+                    {% if e.photo %}
+                        <img src="{{ e.photo.url }}" alt="face">
+                    {% else %}
+                        <span>Chưa có ảnh</span>
+                    {% endif %}
+                    <a href="{% url 'upload_photo' e.employee_id %}">Upload ảnh</a>
+                </td>
+               
+                <td>{% if e.face_embedding_path %}✔{% else %}❌{% endif %}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2>Lịch sử chấm công gần nhất</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Nhân viên</th><th>Thời gian</th><th>Trạng thái</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in attendance_records %}
+            <tr>
+                <td>{{ a.employee.name }}</td>
+                <td>{{ a.check_in_time }}</td>
+                <td>{{ a.status }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+</body>
+</html>
