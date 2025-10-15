@@ -47,7 +47,7 @@ sync_faces()
 from models import SCRFD, ArcFaceONNX
 from utils.helpers import draw_fancy_bbox
 from attendance_manager.attendance_logger import AttendanceLogger
-from attendance_manager.offline_sync import enqueue_attendance
+from attendance_manager.offline_sync import enqueue_attendance, start_background_sync
 
 # === MediaPipe ===
 try:
@@ -170,6 +170,9 @@ def build_targets_and_faiss(detector, recognizer, faces_dir, conf_thresh, input_
 def main():
     args = parse_args()
     setup_logging(args.log_level)
+    # 🔁 Khởi động đồng bộ nền
+    print("[SYSTEM] Starting face recognition system...")
+    start_background_sync()
 
     detector = SCRFD(args.det_weight)
     recognizer = ArcFaceONNX(args.rec_weight)
