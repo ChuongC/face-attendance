@@ -49,6 +49,11 @@ from utils.helpers import draw_fancy_bbox
 from attendance_manager.attendance_logger import AttendanceLogger
 from attendance_manager.offline_sync import enqueue_attendance, start_background_sync
 
+import time
+from datetime import datetime
+from django.utils import timezone
+last_checkin = {} 
+
 # === MediaPipe ===
 try:
     import mediapipe as mp
@@ -264,13 +269,19 @@ def main():
                     color = colors.get(name,(0,255,0)) if name!="Unknown" else (255,0,0)
                     draw_fancy_bbox(frame, bbox, similarity=sim, name=name, color=color)
 
-                    if name!="Unknown":
+                    if name != "Unknown":
                         logger.log(name)
-                        enqueue_attendance(employee_id=name, similarity=sim, source="camera_1")
-                        try:
-                            log_attendance_to_django(name, similarity=sim)
-                        except Exception as e:
-                            logging.warning(f"Django sync failed for {name}: {e}")
+                        now = time.time()
+                        if name in last_checkin and now - last_checkin[name] < 10:
+                            print(f"[SKIP] {name} vừa chấm công gần đây, bỏ qua.")
+                        else:
+                            last_checkin[name] = now
+                            enqueue_attendance(employee_id=name, similarity=sim, source="camera_1")
+                            print(f"[LOG] {name} checked in at {timezone.now().strftime('%H:%M:%S')}")
+                            try:
+                                log_attendance_to_django(name, similarity=sim)
+                            except Exception as e:
+                                logging.warning(f"Django sync failed for {name}: {e}")
                 else:
                     cv2.rectangle(frame,(x1,y1),(x2,y2),(0,0,255),2)
                     cv2.putText(frame,"Spoof?",(x1,y1-6),cv2.FONT_HERSHEY_SIMPLEX,0.5,(0,0,255),2)

@@ -29,6 +29,7 @@ class AttendanceRecord(models.Model):
     check_in_time = models.DateTimeField(default=datetime.now)
     similarity = models.FloatField(default=0.0)
     source = models.CharField(max_length=100, default='camera_1')
+    status = models.CharField(max_length=50, default="Check-in") 
 
     def __str__(self):
         return f"{self.employee.name} - {self.check_in_time.strftime('%Y-%m-%d %H:%M:%S')}"
