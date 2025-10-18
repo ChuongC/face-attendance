@@ -28,6 +28,8 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
+HRM_WEBHOOK_URL = "http://localhost:9000/hrm/webhook"
+
 # Application definition
 
 INSTALLED_APPS = [
@@ -39,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'employees',
     'admin_panel',
-    'rest_framework'
+    'rest_framework',
+    'hrm_integration'
 ]
 
 MIDDLEWARE = [

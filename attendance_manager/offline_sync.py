@@ -172,7 +172,7 @@ def determine_status(employee_id, timestamp):
         delta = now_time - last_time
         if delta < timedelta(minutes=5):
             return None  # tránh spam
-        elif delta < timedelta(hours=4):
+        elif delta < timedelta(hours=2):
             status = "Check-out"
 
     # cập nhật lại file
