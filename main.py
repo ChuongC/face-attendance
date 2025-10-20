@@ -54,6 +54,9 @@ from datetime import datetime
 from django.utils import timezone
 last_checkin = {} 
 
+from attendance_manager.push_to_hrm import enqueue_hrm
+
+
 # === MediaPipe ===
 try:
     import mediapipe as mp
@@ -277,6 +280,14 @@ def main():
                         else:
                             last_checkin[name] = now
                             enqueue_attendance(employee_id=name, similarity=sim, source="camera_1")
+                            # Đồng thời push tới HRM webhook
+                            record = {
+                                "employee_id": name,
+                                "timestamp": timezone.now().isoformat(),
+                                "similarity": sim,
+                                "source": "camera_1"
+                            }
+                            enqueue_hrm(record)
                             print(f"[LOG] {name} checked in at {timezone.now().strftime('%H:%M:%S')}")
                             try:
                                 log_attendance_to_django(name, similarity=sim)
